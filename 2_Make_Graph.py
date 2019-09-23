@@ -4,7 +4,7 @@ from Make_Music_Graph import make_graph
 music_type = ["negative", "positive"]
 
 wav_path_directory = "./Music/WAV/"
-img_path =  "./Image/"
+img_path = "./Image/"
 
 for _list in music_type:
     file_list_dir = wav_path_directory + _list +"/"
