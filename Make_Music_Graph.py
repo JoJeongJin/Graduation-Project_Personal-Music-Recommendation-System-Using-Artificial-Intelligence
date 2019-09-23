@@ -10,7 +10,7 @@ def make_graph(img_path,filepath,filename):
 
     wr = wave.open(filepath, 'r')
     sz = wr.getframerate()
-    q = 100  # time window to analyze in seconds
+    q = 120  # time window to analyze in seconds
     c = 1  # number of time windows to process
     sf = 0.8  # signal scale factor
 
