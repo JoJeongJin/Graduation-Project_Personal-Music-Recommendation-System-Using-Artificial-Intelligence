@@ -5,11 +5,12 @@ import wave
 import numpy as np
 import matplotlib.pyplot as plt
 
+# 1번째 방법
 def make_graph(img_path,filepath,filename):
 
     wr = wave.open(filepath, 'r')
     sz = wr.getframerate()
-    q = 120  # time window to analyze in seconds
+    q = 100  # time window to analyze in seconds
     c = 1  # number of time windows to process
     sf = 0.8  # signal scale factor
 
@@ -42,7 +43,7 @@ def make_graph(img_path,filepath,filename):
         plt.plot(abs(avgf))
         plt.savefig(img_path+filename+'.png')
         plt.clf()
-#
+# 2
 # import matplotlib.pyplot as plt
 # import numpy as np
 # import wave
