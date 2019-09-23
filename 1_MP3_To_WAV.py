@@ -11,6 +11,5 @@ for _list in music_type:
     print(file_list)
     for item in file_list:
         sound = AudioSegment.from_mp3(file_list_dir+item)
-
         print("./Music/WAV/"+_list+"/")
         sound.export("./Music/WAV/"+_list+"/"+item+".wav", format="wav")
