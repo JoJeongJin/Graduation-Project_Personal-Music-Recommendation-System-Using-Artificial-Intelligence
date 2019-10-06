@@ -1,9 +1,9 @@
 import os
 from PIL import Image
 
-music_type = ["negative", "positive"]
+music_type = ["Happy(tension up)", "Sad(이별 및 슬픔)", "Soso(약간 잠자기 전에 듣기 좋은 노래)"]
 
-img_path =  "./Image/"
+img_path = "./Image/"
 
 for _list in music_type:
     file_list_dir = img_path + _list +"/"

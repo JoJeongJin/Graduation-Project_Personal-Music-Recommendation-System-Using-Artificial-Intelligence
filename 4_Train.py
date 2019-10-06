@@ -3,7 +3,7 @@ import os, glob, numpy as np
 from sklearn.model_selection import train_test_split
 
 caltech_dir = "./Image"
-categories = ["positive", "negative"]
+categories = ["Happy(tension up)", "Sad(이별 및 슬픔)", "Soso(약간 잠자기 전에 듣기 좋은 노래)"]
 nb_classes = len(categories)
 
 image_w = 64
@@ -63,7 +63,7 @@ X_train, X_test, y_train, y_test = np.load('./multi_image_data.npy', allow_pickl
 print(X_train.shape)
 print(X_train.shape[0])
 
-categories = ["positive", "negative"]
+categories = ["Happy(tension up)", "Sad(이별 및 슬픔)", "Soso(약간 잠자기 전에 듣기 좋은 노래)"]
 nb_classes = len(categories)
 
 #일반화

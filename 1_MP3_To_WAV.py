@@ -1,7 +1,7 @@
 from pydub import AudioSegment
 import os
 
-music_type = ["negative", "positive"]
+music_type = ["Happy(tension up)", "Sad(이별 및 슬픔)", "Soso(약간 잠자기 전에 듣기 좋은 노래)"]
 
 mp3_path_directory = "./Music/MP3/"
 
@@ -12,5 +12,5 @@ for _list in music_type:
     print("파일 개수: "+ str(len(file_list)))
     for item in file_list:
         sound = AudioSegment.from_mp3(file_list_dir+item)
-        print("./Music/WAV/"+_list+"/"+item)
+        print(item)
         sound.export("./Music/WAV/"+_list+"/"+item+".wav", format="wav")
