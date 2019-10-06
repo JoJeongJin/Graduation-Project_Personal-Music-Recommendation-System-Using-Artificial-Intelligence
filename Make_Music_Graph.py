@@ -6,24 +6,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # 1번째 방법
-def make_graph(img_path,filepath,filename,music_type):
+def make_graph(img_path,filepath,filename,music_type,index):
 
     wr = wave.open(filepath, 'r')
     sz = wr.getframerate()
     q = 120  # time window to analyze in seconds
     c = 1  # number of time windows to process
-    sf = 0.8  # signal scale factor
-    index = 0
+    sf = 0.8  # signal scale
 
     for num in range(c):
-
-        index = index + 1
         try:
             print('Processing from {} to {} s'.format(num * q, (num + 1) * q))
             avgf = np.zeros(int(sz / 2 + 1))
             snd = np.array([])
-            # The sound signal for q seconds is concatenated. The fft over that
-            # period is averaged to average out noise.
+                # The sound signal for q seconds is concatenated. The fft over that
+                # period is averaged to average out noise.
             for j in range(q):
                 da = np.fromstring(wr.readframes(sz), dtype=np.int16)
                 left, right = da[0::2] * sf, da[1::2] * sf
@@ -46,10 +43,11 @@ def make_graph(img_path,filepath,filename,music_type):
             b.set_ylabel('|amplitude|')
             plt.plot(abs(avgf))
 
-            if(index%5==0):
+            print(index)
+            if((index%5)!=0):
                 plt.savefig(img_path + filename + '.png')
             else:
-                plt.savefig("./test_set/"+ music_type + "/" + filename + '.png')
+                plt.savefig("./test_set/"+ music_type + "/" + music_type+"_"+ str(index) + '.png')
             plt.clf()
         except:
             print("오류 발생: " + filename)
