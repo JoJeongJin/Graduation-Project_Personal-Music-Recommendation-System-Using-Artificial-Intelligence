@@ -52,7 +52,7 @@ def make_graph(img_path,filepath,filename,music_type):
                 plt.savefig("./test_set/"+ music_type + "/" + filename + '.png')
             plt.clf()
         except:
-            print("오류 발생 : " + filename)
+            print("오류 발생: " + filename)
 
 # 2
 # import matplotlib.pyplot as plt
