@@ -47,7 +47,7 @@ def make_graph(img_path,filepath,filename,music_type,index):
             if((index%5)!=0):
                 plt.savefig(img_path + filename + '.png')
             else:
-                plt.savefig("./test_set/"+ music_type + "/" + music_type+"_"+ str(index) + '.png')
+                plt.savefig("./test_set/"+ music_type+"_"+ str(index) + '.png')
             plt.clf()
         except:
             print("오류 발생: " + filename)

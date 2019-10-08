@@ -3,11 +3,11 @@ import os, glob, numpy as np
 from sklearn.model_selection import train_test_split
 
 caltech_dir = "./Image"
-categories = ["Happy(tension up)", "Sad(이별 및 슬픔)", "Soso(약간 잠자기 전에 듣기 좋은 노래)"]
+categories = ["Happy(tension up)", "Medium(약간 잠자기 전에 듣기 좋은 노래)", "Sad(이별 및 슬픔)"]
 nb_classes = len(categories)
 
-image_w = 64
-image_h = 64
+image_w = 256
+image_h = 256
 
 pixels = image_h * image_w * 3
 
@@ -63,8 +63,9 @@ X_train, X_test, y_train, y_test = np.load('./multi_image_data.npy', allow_pickl
 print(X_train.shape)
 print(X_train.shape[0])
 
-categories = ["Happy(tension up)", "Sad(이별 및 슬픔)", "Soso(약간 잠자기 전에 듣기 좋은 노래)"]
+categories = ["Happy(tension up)", "Medium(약간 잠자기 전에 듣기 좋은 노래)", "Sad(이별 및 슬픔)"]
 nb_classes = len(categories)
+print("nb_classes = " + str(nb_classes))
 
 #일반화
 X_train = X_train.astype(float) / 255
@@ -73,21 +74,21 @@ X_test = X_test.astype(float) / 255
 with K.tf_ops.device('/device:GPU:0'):
     model = Sequential()
 
-    # model.add(Conv2D(16, (2, 2), padding="same", input_shape=X_train.shape[1:], activation='relu'))
-    # model.add(MaxPooling2D(pool_size=(2, 2)))
+    # model.add(Conv2D(16, (4, 4), padding="same", input_shape=X_train.shape[1:], activation='relu'))
+    # model.add(MaxPooling2D(pool_size=(4, 4)))
     # model.add(Dropout(0.25))
 
     model.add(Conv2D(64, (3, 3), padding="same", input_shape=X_train.shape[1:], activation='relu'))
     model.add(MaxPooling2D(pool_size=(3, 3)))
-    model.add(Dropout(0.20))
+    model.add(Dropout(0.30))
 
     model.add(Conv2D(128, (3, 3), padding="same", input_shape=X_train.shape[1:], activation='relu'))
     model.add(MaxPooling2D(pool_size=(3, 3)))
-    model.add(Dropout(0.20))
+    model.add(Dropout(0.30))
 
     model.add(Flatten())
     model.add(Dense(256, activation='relu'))
-    model.add(Dropout(0.1))
+    model.add(Dropout(0.4))
     model.add(Dense(nb_classes, activation='softmax'))
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     model_dir = './model'
@@ -97,7 +98,7 @@ with K.tf_ops.device('/device:GPU:0'):
 
     model_path = model_dir + '/multi_img_classification.model'
     checkpoint = ModelCheckpoint(filepath=model_path, monitor='val_loss', verbose=1, save_best_only=True)
-    early_stopping = EarlyStopping(monitor='val_loss', patience=15)
+    early_stopping = EarlyStopping(monitor='val_loss', patience=30)
 
 #데이터셋이 적어서 validation을 그냥 test 데이터로 했습니다.
 #데이터셋이 충분하시면 이렇게 하시지 마시고 validation_split=0.2 이렇게 하셔서 테스트 셋으로 나누시길 권장합니다.

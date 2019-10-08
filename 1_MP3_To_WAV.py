@@ -1,7 +1,7 @@
 from pydub import AudioSegment
 import os
 
-music_type = ["Happy(tension up)", "Sad(이별 및 슬픔)", "Soso(약간 잠자기 전에 듣기 좋은 노래)"]
+music_type = ["Happy(tension up)", "Medium(약간 잠자기 전에 듣기 좋은 노래)", "Sad(이별 및 슬픔)"]
 
 mp3_path_directory = "./Music/MP3/"
 
