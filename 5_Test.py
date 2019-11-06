@@ -26,7 +26,7 @@ def plot_confusion_matrix(y_true, y_pred, classes,
     # Compute confusion matrix
     cm = confusion_matrix(y_true, y_pred)
     # Only use the labels that appear in the data
-    classes = ["Happy(tension up)", "Medium(약간 잠자기 전에 듣기 좋은 노래)", "Sad(이별 및 슬픔)"]
+    classes = ["Happy(tension up)", "Sad(이별 및 슬픔)"]
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
         print("Normalized confusion matrix")
@@ -65,10 +65,10 @@ def plot_confusion_matrix(y_true, y_pred, classes,
     fig.tight_layout()
     return ax
 
-
 caltech_dir = "./test_set"
-image_w = 256
-image_h = 256
+image_size = 512
+image_w = image_size
+image_h = image_size
 
 pixels = image_h * image_w * 3
 
@@ -103,12 +103,9 @@ for i in prediction:
     if pre_ans == 0:
         pre_ans_str = "Happy(tension up)"
     elif pre_ans == 1:
-        pre_ans_str = "Medium(약간 잠자기 전에 듣기 좋은 노래)"
-    elif pre_ans == 2:
         pre_ans_str = "Sad(이별 및 슬픔)"
     if i[0] >= 0.8: print("해당 " + filenames[cnt].split("\\")[1] + "이미지는 " + pre_ans_str + "로 추정됩니다.")
     if i[1] >= 0.8: print("해당 " + filenames[cnt].split("\\")[1] + "이미지는 " + pre_ans_str + "로 추정됩니다.")
-    if i[2] >= 0.8: print("해당 " + filenames[cnt].split("\\")[1] + "이미지는 " + pre_ans_str + "로 추정됩니다.")
 
     real_label = filenames[cnt].split("\\")[1][0:1]
     predict_label = pre_ans_str[0:1]
@@ -123,7 +120,7 @@ for i in prediction:
     # print(i.argmax()) #얘가 레이블 [1. 0. 0.] 이런식으로 되어 있는 것을 숫자로 바꿔주는 것.
     # 즉 얘랑, 나중에 카테고리 데이터 불러와서 카테고리랑 비교를 해서 같으면 맞는거고, 아니면 틀린거로 취급하면 된다.
 
-classes = ["Happy(tension up)", "Medium(약간 잠자기 전에 듣기 좋은 노래)", "Sad(이별 및 슬픔)"]
+classes = ["Happy(tension up)", "Sad(이별 및 슬픔)"]
 
 np.set_printoptions(precision=2)
 

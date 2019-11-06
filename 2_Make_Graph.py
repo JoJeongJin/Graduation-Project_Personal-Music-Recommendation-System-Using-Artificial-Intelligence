@@ -1,7 +1,7 @@
 import os
 from Make_Music_Graph import make_graph
 
-music_type = ["Happy(tension up)", "Medium(약간 잠자기 전에 듣기 좋은 노래)", "Sad(이별 및 슬픔)"]
+music_type = ["Happy(tension up)", "Sad(이별 및 슬픔)"]
 
 wav_path_directory = "./Music/WAV/"
 img_path = "./Image/"
