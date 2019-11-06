@@ -44,7 +44,7 @@ def make_graph(img_path,filepath,filename,music_type,index):
             plt.plot(abs(avgf))
 
             print(index)
-            if((index%5)!=0):
+            if((index%10)!=0):
                 plt.savefig(img_path + filename + '.png')
             else:
                 plt.savefig("./test_set/"+ music_type+"_"+ str(index) + '.png')
