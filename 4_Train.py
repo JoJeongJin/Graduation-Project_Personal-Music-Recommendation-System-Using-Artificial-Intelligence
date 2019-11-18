@@ -3,9 +3,10 @@ import os, glob, numpy as np
 from sklearn.model_selection import train_test_split
 
 caltech_dir = "./Image"
-categories = ["Happy(tension up)", "Sad(이별 및 슬픔)"]
+categories = ["HD", "HL", "SD", "SL"]
 nb_classes = len(categories)
 
+print('클래스 개수 : ', nb_classes)
 image_size = 512
 image_w = image_size
 image_h = image_size
@@ -16,14 +17,17 @@ X = []
 y = []
 
 for idx, cat in enumerate(categories):
-
+    # 0 HD
+    # 1 HL
+    # 2 SD
+    # 3 SL
     # one-hot 돌리기.
     label = [0 for i in range(nb_classes)]
     label[idx] = 1
-
     image_dir = caltech_dir + "/" + cat
     files = glob.glob(image_dir + "/*.PNG")
     print(cat, " 파일 길이 : ", len(files))
+
     for i, f in enumerate(files):
         img = Image.open(f)
         img = img.convert("RGB")
@@ -38,9 +42,11 @@ for idx, cat in enumerate(categories):
 
 X = np.array(X)
 y = np.array(y)
+
+# print(X)
+# print(y)
 # 1 0 0 0 이면 A
 # 0 1 0 0 이면 B
-
 
 X_train, X_test, y_train, y_test = train_test_split(X, y)
 xy = (X_train, X_test, y_train, y_test)
@@ -64,7 +70,7 @@ X_train, X_test, y_train, y_test = np.load('./multi_image_data.npy', allow_pickl
 print(X_train.shape)
 print(X_train.shape[0])
 
-categories = ["Happy(tension up)", "Sad(이별 및 슬픔)"]
+categories = ["HD", "HL", "SD", "SL"]
 nb_classes = len(categories)
 print("nb_classes = " + str(nb_classes))
 
@@ -93,7 +99,7 @@ with K.tf_ops.device('/device:GPU:0'):
 
     model.add(Flatten())
     model.add(Dense(256, activation='relu'))
-    model.add(Dropout(0.9))
+    model.add(Dropout(0.2))
     model.add(Dense(nb_classes, activation='softmax'))
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     model_dir = './model'
@@ -105,9 +111,9 @@ with K.tf_ops.device('/device:GPU:0'):
     checkpoint = ModelCheckpoint(filepath=model_path, monitor='val_loss', verbose=1, save_best_only=True)
     early_stopping = EarlyStopping(monitor='val_loss', patience=30)
 
-#데이터셋이 적어서 validation을 그냥 test 데이터로 했습니다.
-#데이터셋이 충분하시면 이렇게 하시지 마시고 validation_split=0.2 이렇게 하셔서 테스트 셋으로 나누시길 권장합니다.
-history = model.fit(X_train, y_train, batch_size=32, epochs=100, validation_data=(X_test, y_test), callbacks=[checkpoint, early_stopping])
+# 데이터셋이 적어서 validation을 그냥 test 데이터로 했습니다.
+# 데이터셋이 충분하시면 이렇게 하시지 마시고 validation_split=0.2 이렇게 하셔서 테스트 셋으로 나누시길 권장합니다.
+history = model.fit(X_train, y_train, batch_size=32, epochs=50, validation_data=(X_test, y_test), callbacks=[checkpoint, early_stopping])
 
 print("정확도 : %.4f" % (model.evaluate(X_test, y_test)[1]))
 
