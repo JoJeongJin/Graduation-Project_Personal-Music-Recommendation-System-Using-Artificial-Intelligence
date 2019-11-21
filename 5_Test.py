@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix
 from sklearn.utils.multiclass import unique_labels
 
+
 def plot_confusion_matrix(y_true, y_pred, classes,
                           normalize=False,
                           title=None,
@@ -51,6 +52,7 @@ def plot_confusion_matrix(y_true, y_pred, classes,
     # Rotate the tick labels and set their alignment.
     plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
              rotation_mode="anchor")
+    plt.figure(figsize=(15, 12))
 
     # Loop over data dimensions and create text annotations.
     fmt = '.2f' if normalize else 'd'
@@ -62,88 +64,96 @@ def plot_confusion_matrix(y_true, y_pred, classes,
                     ha="center", va="center",
                     color="white" if cm[i, j] > thresh else "black")
     fig.tight_layout()
+
+    # plt.savefig('./result_image/' + name + '.png')
+
     return ax
 
 
-caltech_dir = "./test_set"
-image_size = 512
-image_w = image_size
-image_h = image_size
+# caltech_dir = "./test_set/"
+names = ['BM', 'JJ']
 
-pixels = image_h * image_w * 3
+for name in names:
+    caltech_dir = "./test_set/"
+    image_size = 512
+    image_w = image_size
+    image_h = image_size
 
-X = []
-filenames = []
-files = glob.glob(caltech_dir + "/*.*")
-for i, f in enumerate(files):
-    img = Image.open(f)
-    img = img.convert("RGB")
-    img = img.resize((image_w, image_h))
-    data = np.asarray(img)
-    filenames.append(f)
-    X.append(data)
+    pixels = image_h * image_w * 3
 
-X = np.array(X)
-model = load_model('./model/multi_img_classification.model')
+    X = []
+    filenames = []
+    files = glob.glob(caltech_dir + name + "/*.*")
+    for i, f in enumerate(files):
+        img = Image.open(f)
+        img = img.convert("RGB")
+        img = img.resize((image_w, image_h))
+        data = np.asarray(img)
+        filenames.append(f)
+        X.append(data)
 
-prediction = model.predict(X)
-np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
-cnt = 0
+    X = np.array(X)
+    model = load_model('./model/multi_img_classification_' + name + '.model')
 
-list_real_label = []
-list_predict_label = []
+    prediction = model.predict(X)
+    np.set_printoptions(formatter={'float': lambda x: "{0:0.3f}".format(x)})
+    cnt = 0
 
-# 이 비교는 그냥 파일들이 있으면 해당 파일과 비교. 카테고리와 함께 비교해서 진행하는 것은 _4 파일.
-for i in prediction:
-    pre_ans = i.argmax()  # 예측 레이블
-    print(i)
-    print(pre_ans)
-    pre_ans_str = ''
-    # "Happy(tension up)", "Sad(이별 및 슬픔)", "Medium(약간 잠자기 전에 듣기 좋은 노래)"
+    list_real_label = []
+    list_predict_label = []
+
+    # 이 비교는 그냥 파일들이 있으면 해당 파일과 비교. 카테고리와 함께 비교해서 진행하는 것은 _4 파일.
+    for i in prediction:
+        pre_ans = i.argmax()  # 예측 레이블
+        print(i)
+        print(pre_ans)
+        pre_ans_str = ''
+        # "Happy(tension up)", "Sad(이별 및 슬픔)", "Medium(약간 잠자기 전에 듣기 좋은 노래)"
+        # BM
+        if pre_ans == 0:
+            pre_ans_str = "HD"
+        elif pre_ans == 1:
+            pre_ans_str = "HL"
+        elif pre_ans == 2:
+            pre_ans_str = "SD"
+        elif pre_ans == 3:
+            pre_ans_str = "SL"
+
+        if i[0] >= 0.8: print("해당 " + filenames[cnt].split("\\")[1] + "이미지는 " + pre_ans_str + "로 추정됩니다.")
+        if i[1] >= 0.8: print("해당 " + filenames[cnt].split("\\")[1] + "이미지는 " + pre_ans_str + "로 추정됩니다.")
+
+        # BM
+        if i[2] >= 0.8: print("해당 " + filenames[cnt].split("\\")[1] + "이미지는 " + pre_ans_str + "로 추정됩니다.")
+        if i[3] >= 0.8: print("해당 " + filenames[cnt].split("\\")[1] + "이미지는 " + pre_ans_str + "로 추정됩니다.")
+
+        # real_label = filenames[cnt].split("\\")[1][0:1]
+        # predict_label = pre_ans_str[0:1]
+
+        # BM
+        real_label = filenames[cnt].split("\\")[1][0:2]
+        predict_label = pre_ans_str[0:2]
+
+        print('RL : ', real_label, 'PL : ', predict_label)
+        # print(predict_label)
+
+        list_real_label.append(real_label)
+        list_predict_label.append(predict_label)
+
+        cnt += 1
+        # print(i.argmax()) #얘가 레이블 [1. 0. 0.] 이런식으로 되어 있는 것을 숫자로 바꿔주는 것.
+        # 즉 얘랑, 나중에 카테고리 데이터 불러와서 카테고리랑 비교를 해서 같으면 맞는거고, 아니면 틀린거로 취급하면 된다.
+
     # BM
-    if pre_ans == 0:
-        pre_ans_str = "HD"
-    elif pre_ans == 1:
-        pre_ans_str = "HL"
-    elif pre_ans == 2:
-        pre_ans_str = "SD"
-    elif pre_ans == 3:
-        pre_ans_str = "SL"
+    classes = ["HD", "HL", "SD", "SL"]
+    np.set_printoptions(precision=4)
 
-    if i[0] >= 0.8: print("해당 " + filenames[cnt].split("\\")[1] + "이미지는 " + pre_ans_str + "로 추정됩니다.")
-    if i[1] >= 0.8: print("해당 " + filenames[cnt].split("\\")[1] + "이미지는 " + pre_ans_str + "로 추정됩니다.")
+    # Plot non-normalized confusion matrix
+    plot_confusion_matrix(list_real_label, list_predict_label, classes=classes,
+                          title='Confusion matrix, without normalization')
 
-    # BM
-    if i[2] >= 0.8: print("해당 " + filenames[cnt].split("\\")[1] + "이미지는 " + pre_ans_str + "로 추정됩니다.")
-    if i[3] >= 0.8: print("해당 " + filenames[cnt].split("\\")[1] + "이미지는 " + pre_ans_str + "로 추정됩니다.")
+    # Plot normalized confusion matrix
+    plot_confusion_matrix(list_real_label, list_predict_label, classes=classes, normalize=True,
+                          title='Normalized confusion matrix')
 
-    # real_label = filenames[cnt].split("\\")[1][0:1]
-    # predict_label = pre_ans_str[0:1]
-
-    # BM
-    real_label = filenames[cnt].split("\\")[1][0:2]
-    predict_label = pre_ans_str[0:2]
-
-    print('RL : ', real_label, 'PL : ', predict_label)
-    # print(predict_label)
-
-    list_real_label.append(real_label)
-    list_predict_label.append(predict_label)
-
-    cnt += 1
-    # print(i.argmax()) #얘가 레이블 [1. 0. 0.] 이런식으로 되어 있는 것을 숫자로 바꿔주는 것.
-    # 즉 얘랑, 나중에 카테고리 데이터 불러와서 카테고리랑 비교를 해서 같으면 맞는거고, 아니면 틀린거로 취급하면 된다.
-
-# BM
-classes = ["HD", "HL", "SD", "SL"]
-np.set_printoptions(precision=4)
-
-# Plot non-normalized confusion matrix
-plot_confusion_matrix(list_real_label, list_predict_label, classes=classes,
-                      title='Confusion matrix, without normalization')
-
-# Plot normalized confusion matrix
-plot_confusion_matrix(list_real_label, list_predict_label, classes=classes, normalize=True,
-                      title='Normalized confusion matrix')
-
-plt.show()
+    plt.show()
+    # plt.savefig('./result_image/' + name + '.png')
